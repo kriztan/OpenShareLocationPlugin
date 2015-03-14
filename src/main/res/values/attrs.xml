@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+    Resource copied from Conversations and the official Location sharing plugin by iNPUTmice.
+    -->
+    <attr name="TextSizeInfo" format="dimension" />
+    <attr name="TextSizeBody" format="dimension" />
+    <attr name="TextSizeHeadline" format="dimension" />
+
+</resources>
