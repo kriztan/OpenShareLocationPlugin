@@ -61,7 +61,6 @@ public class ShowLocationActivity extends Activity {
 			item.setVisible(false);
 		}
 
-
 		return true;
 	}
 

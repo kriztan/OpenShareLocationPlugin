@@ -40,8 +40,10 @@
         CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
         OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
         OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-        \n\n\n<b>Libraries</b>
+        \n\n\n<b>Open Source Usage</b>
         \n\nhttps://github.com/osmdroid/osmdroid\n(Apache License)
+        \n\nhttps://github.com/siacs/Conversations\n(GPL)
+        \n\nhttps://github.com/siacs/ShareLocationPlugin\n(GPL)
     </string>
 
 
