@@ -1,10 +1,12 @@
-package com.samwhited.opensharelocationplugin;
+package com.samwhited.opensharelocationplugin.overlays;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Point;
+
+import com.samwhited.opensharelocationplugin.R;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;

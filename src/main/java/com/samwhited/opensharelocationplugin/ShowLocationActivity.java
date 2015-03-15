@@ -1,24 +1,29 @@
 package com.samwhited.opensharelocationplugin;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ShareActionProvider;
 
+import com.samwhited.opensharelocationplugin.overlays.Marker;
+import com.samwhited.opensharelocationplugin.overlays.MyLocation;
+
 import org.osmdroid.api.IMapController;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
 
-public class ShowLocationActivity extends Activity {
+public class ShowLocationActivity extends LocationActivity implements LocationListener {
 
 	private GeoPoint loc = Config.INITIAL_POS;
+	private Location myLoc = null;
 	private IMapController mapController;
 	private MapView map;
 
@@ -49,6 +54,16 @@ public class ShowLocationActivity extends Activity {
 	}
 
 	@Override
+	protected void gotoLoc() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected void setLoc(final Location location) {
+		this.myLoc = location;
+	}
+
+	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.menu_show_location, menu);
@@ -69,6 +84,21 @@ public class ShowLocationActivity extends Activity {
 		return true;
 	}
 
+	private void addOverlays() {
+		this.map.getOverlays().clear();
+		this.map.getOverlays().add(0, new Marker(this, this.loc));
+
+		if (myLoc != null) {
+			this.map.getOverlays().add(1, new MyLocation(this, this.myLoc));
+			this.map.invalidate();
+		}
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -83,7 +113,7 @@ public class ShowLocationActivity extends Activity {
 					mapController.animateTo(this.loc);
 					mapController.setZoom(Config.FINAL_ZOOM_LEVEL);
 
-					this.map.getOverlays().add(new Marker(this, this.loc));
+					addOverlays();
 				}
 			}
 		}
@@ -105,5 +135,28 @@ public class ShowLocationActivity extends Activity {
 				return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onLocationChanged(final Location location) {
+		if (LocationHelper.isBetterLocation(location, this.myLoc)) {
+			this.myLoc = location;
+			addOverlays();
+		}
+	}
+
+	@Override
+	public void onStatusChanged(final String provider, final int status, final Bundle extras) {
+
+	}
+
+	@Override
+	public void onProviderEnabled(final String provider) {
+
+	}
+
+	@Override
+	public void onProviderDisabled(final String provider) {
+
 	}
 }

@@ -1,12 +1,9 @@
 package com.samwhited.opensharelocationplugin;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -18,17 +15,18 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.samwhited.opensharelocationplugin.overlays.Marker;
+
 import org.osmdroid.api.IMapController;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
-public class ShareLocationActivity extends Activity implements LocationListener {
+public class ShareLocationActivity extends LocationActivity implements LocationListener {
 
 	private Location loc;
 	private IMapController mapController;
 	private Button shareButton;
 	private RelativeLayout snackBar;
-	private LocationManager locationManager;
 	private MapView map;
 
 	@Override
@@ -83,43 +81,23 @@ public class ShareLocationActivity extends Activity implements LocationListener 
 				startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 			}
 		});
-
-		this.locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
-		// Request location updates from the system location manager
-		requestLocationUpdates();
 	}
 
-	private void requestLocationUpdates() {
-		final Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-		if (lastKnownLocation != null) {
-			this.loc = lastKnownLocation;
-			gotoLoc();
-		}
 
-		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, Config.LOCATION_FIX_TIME_DELTA,
-				Config.LOCATION_FIX_SPACE_DELTA, this);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Config.LOCATION_FIX_TIME_DELTA,
-				Config.LOCATION_FIX_SPACE_DELTA, this);
 
-		// If something else is also querying for location more frequently than we are, the battery is already being
-		// drained. Go ahead and use the existing locations as often as we can get them.
-		locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, this);
-	}
-
-	private void pauseLocationUpdates() {
-		locationManager.removeUpdates(this);
-	}
-
-	private void gotoLoc() {
+	protected void gotoLoc() {
 		mapController.animateTo(new GeoPoint(this.loc));
 		mapController.setZoom(Config.FINAL_ZOOM_LEVEL);
 	}
 
 	@Override
+	protected void setLoc(final Location location) {
+		this.loc = location;
+	}
+
+	@Override
 	protected void onPause() {
 		super.onPause();
-		pauseLocationUpdates();
 	}
 
 	private void setShareButtonEnabled(final boolean enabled) {
@@ -137,64 +115,17 @@ public class ShareLocationActivity extends Activity implements LocationListener 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		this.loc = null;
 		if (isLocationEnabled()) {
 			this.snackBar.setVisibility(View.GONE);
 		} else {
 			this.snackBar.setVisibility(View.VISIBLE);
 		}
 		setShareButtonEnabled(false);
-
-		requestLocationUpdates();
-	}
-
-	public boolean isBetterLocation(final Location location) {
-		if (loc == null) {
-			return true;
-		}
-
-		// Check whether the new location fix is newer or older
-		final long timeDelta = location.getTime() - loc.getTime();
-		final boolean isSignificantlyNewer = timeDelta > Config.LOCATION_FIX_SIGNIFICANT_TIME_DELTA;
-		final boolean isSignificantlyOlder = timeDelta < -Config.LOCATION_FIX_SIGNIFICANT_TIME_DELTA;
-		final boolean isNewer = timeDelta > 0;
-
-		if (isSignificantlyNewer) {
-			return true;
-		} else if (isSignificantlyOlder) {
-			return false;
-		}
-
-		// Check whether the new location fix is more or less accurate
-		final int accuracyDelta = (int) (location.getAccuracy() - loc.getAccuracy());
-		final boolean isLessAccurate = accuracyDelta > 0;
-		final boolean isMoreAccurate = accuracyDelta < 0;
-		final boolean isSignificantlyLessAccurate = accuracyDelta > 200;
-
-		// Check if the old and new location are from the same provider
-		final boolean isFromSameProvider = isSameProvider(location.getProvider(), loc.getProvider());
-
-		// Determine location quality using a combination of timeliness and accuracy
-		if (isMoreAccurate) {
-			return true;
-		} else if (isNewer && !isLessAccurate) {
-			return true;
-		} else if (isNewer && !isSignificantlyLessAccurate && isFromSameProvider) {
-			return true;
-		}
-		return false;
-	}
-
-	private boolean isSameProvider(final String provider1, final String provider2) {
-		if (provider1 == null) {
-			return provider2 == null;
-		}
-		return provider1.equals(provider2);
 	}
 
 	@Override
 	public void onLocationChanged(final Location location) {
-		if (isBetterLocation(location)) {
+		if (LocationHelper.isBetterLocation(location, this.loc)) {
 			setShareButtonEnabled(true);
 			this.loc = location;
 			gotoLoc();
