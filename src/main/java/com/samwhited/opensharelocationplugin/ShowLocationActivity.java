@@ -12,12 +12,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ShareActionProvider;
 
-import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.osmdroid.api.IMapController;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapController;
+import org.osmdroid.views.MapView;
 
 
 public class ShowLocationActivity extends Activity {
 
-	protected Location loc;
+	protected String locName;
+	protected GeoPoint loc = Config.INITIAL_POS;
+	protected MapView map;
+	protected IMapController mapController;
 
 	private Uri createGeoUri() {
 		return Uri.parse("geo:" + loc.getLatitude() + "," + loc.getLongitude());
@@ -27,16 +34,23 @@ public class ShowLocationActivity extends Activity {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		AndroidGraphicFactory.createInstance(this.getApplication());
-
 		final ActionBar actionBar = getActionBar();
 		if (actionBar != null) {
 			actionBar.setDisplayHomeAsUpEnabled(true);
 		}
 
 		setContentView(R.layout.activity_show_location);
-	}
 
+		// Get map view and configure it.
+		this.map = (MapView) findViewById(R.id.map);
+		map.setTileSource(TileSourceFactory.MAPNIK);
+		map.setBuiltInZoomControls(true);
+		map.setMultiTouchControls(true);
+
+		this.mapController = map.getController();
+		mapController.setZoom(Config.INITIAL_ZOOM_LEVEL);
+		mapController.setCenter(this.loc);
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
@@ -48,7 +62,7 @@ public class ShowLocationActivity extends Activity {
 			final ShareActionProvider mShareActionProvider = (ShareActionProvider) item.getActionProvider();
 			final Intent shareIntent = new Intent();
 			shareIntent.setAction(Intent.ACTION_SEND);
-			shareIntent.putExtra(Intent.EXTRA_TEXT, loc.toString());
+			shareIntent.putExtra(Intent.EXTRA_TEXT, createGeoUri().toString());
 			shareIntent.setType("text/plain");
 			mShareActionProvider.setShareIntent(shareIntent);
 		} else {
@@ -61,13 +75,35 @@ public class ShowLocationActivity extends Activity {
 	}
 
 	@Override
+	protected void onResume() {
+		super.onResume();
+		final Intent intent = getIntent();
+
+		if (intent != null) {
+			this.locName = intent.getStringExtra("name");
+
+			if (intent.hasExtra("longitude") && intent.hasExtra("latitude")) {
+				final double longitude = intent.getDoubleExtra("longitude", 0);
+				final double latitude = intent.getDoubleExtra("latitude", 0);
+				this.loc = new GeoPoint(latitude, longitude);
+				if (this.mapController != null) {
+					mapController.animateTo(this.loc);
+					mapController.setZoom(Config.FINAL_ZOOM_LEVEL);
+				}
+			}
+		} else {
+			this.locName = null;
+		}
+	}
+
+	@Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 			case android.R.id.home:
 				finish();
 				return true;
 			case R.id.action_about:
-				// TODO: Launch about dialog here.
+				startActivity(new Intent(this, AboutActivity.class));
 				return true;
 			case R.id.action_copy_location:
 				final ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);

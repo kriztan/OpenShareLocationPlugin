@@ -4,9 +4,9 @@
                 android:layout_height="match_parent"
                 tools:context="com.samwhited.opensharelocationplugin.ShowLocationActivity">
 
-    <org.mapsforge.map.android.view.MapView
-        android:id="@+id/mapView"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+    <org.osmdroid.views.MapView android:id="@+id/map"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                tilesource="Mapnik"/>
 
 </RelativeLayout>

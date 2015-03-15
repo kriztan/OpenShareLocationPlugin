@@ -7,6 +7,12 @@ doesn't require the Google Play Services to be installed. Consequentially, it
 will probably not be as accurate as the official one (which uses the Google
 API's) as it only uses basic AOSP geolocation services.
 
+Services used:
+
+ - [OSMDroid][osmdroid]
+ - [Mapnik][mapnik]
 
 [conversations]: https://github.com/siacs/Conversations
 [conversations-loc]: https://github.com/siacs/ShareLocationPlugin
+[osmdroid]: https://github.com/osmdroid/osmdroid
+[mapnik]: http://mapnik.org/
