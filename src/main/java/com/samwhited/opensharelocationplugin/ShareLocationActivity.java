@@ -29,14 +29,13 @@ public class ShareLocationActivity extends Activity implements LocationListener 
 	private IMapController mapController;
 	private Button shareButton;
 	private RelativeLayout snackBar;
+	private LocationManager locationManager;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_share_location);
-
-		final LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
 		// Get map view and configure it.
 		final MapView map = (MapView) findViewById(R.id.map);
@@ -85,18 +84,50 @@ public class ShareLocationActivity extends Activity implements LocationListener 
 			}
 		});
 
+		this.locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
 		// Request location updates from the system location manager
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+		requestLocationUpdates();
+	}
+
+	private void requestLocationUpdates() {
 		final Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		if (lastKnownLocation != null) {
 			this.loc = lastKnownLocation;
 			gotoLoc();
 		}
+
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, Config.LOCATION_FIX_TIME_DELTA,
+				Config.LOCATION_FIX_SPACE_DELTA, this);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Config.LOCATION_FIX_TIME_DELTA,
+				Config.LOCATION_FIX_SPACE_DELTA, this);
+	}
+
+	private void pauseLocationUpdates() {
+		locationManager.removeUpdates(this);
 	}
 
 	private void gotoLoc() {
 		mapController.animateTo(new GeoPoint(this.loc));
 		mapController.setZoom(Config.FINAL_ZOOM_LEVEL);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		pauseLocationUpdates();
+	}
+
+	private void setShareButtonEnabled(final boolean enabled) {
+		if (enabled) {
+			this.shareButton.setEnabled(true);
+			this.shareButton.setTextColor(0xde000000);
+			this.shareButton.setText(R.string.share);
+		} else {
+			this.shareButton.setEnabled(false);
+			this.shareButton.setTextColor(0x8a000000);
+			this.shareButton.setText(R.string.locating);
+		}
 	}
 
 	@Override
@@ -108,20 +139,66 @@ public class ShareLocationActivity extends Activity implements LocationListener 
 		} else {
 			this.snackBar.setVisibility(View.VISIBLE);
 		}
-		shareButton.setEnabled(false);
-		shareButton.setTextColor(0x8a000000);
-		shareButton.setText(R.string.locating);
+		setShareButtonEnabled(false);
+
+		requestLocationUpdates();
+	}
+
+	public boolean isBetterLocation(final Location location) {
+		if (loc == null) {
+			return true;
+		}
+
+		// Check whether the new location fix is newer or older
+		final long timeDelta = location.getTime() - loc.getTime();
+		final boolean isSignificantlyNewer = timeDelta > Config.LOCATION_FIX_SIGNIFICANT_TIME_DELTA;
+		final boolean isSignificantlyOlder = timeDelta < -Config.LOCATION_FIX_SIGNIFICANT_TIME_DELTA;
+		final boolean isNewer = timeDelta > 0;
+
+		if (isSignificantlyNewer) {
+			return true;
+		} else if (isSignificantlyOlder) {
+			return false;
+		}
+
+		// Check whether the new location fix is more or less accurate
+		final int accuracyDelta = (int) (location.getAccuracy() - loc.getAccuracy());
+		final boolean isLessAccurate = accuracyDelta > 0;
+		final boolean isMoreAccurate = accuracyDelta < 0;
+		final boolean isSignificantlyLessAccurate = accuracyDelta > 200;
+
+		// Check if the old and new location are from the same provider
+		final boolean isFromSameProvider = isSameProvider(location.getProvider(), loc.getProvider());
+
+		// Determine location quality using a combination of timeliness and accuracy
+		if (isMoreAccurate) {
+			return true;
+		} else if (isNewer && !isLessAccurate) {
+			return true;
+		} else if (isNewer && !isSignificantlyLessAccurate && isFromSameProvider) {
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isSameProvider(final String provider1, final String provider2) {
+		if (provider1 == null) {
+			return provider2 == null;
+		}
+		return provider1.equals(provider2);
 	}
 
 	@Override
 	public void onLocationChanged(final Location location) {
-		if (this.loc == null) {
-			this.shareButton.setEnabled(true);
-			this.shareButton.setTextColor(0xde000000);
-			this.shareButton.setText(R.string.share);
+		if (isBetterLocation(location)) {
+			setShareButtonEnabled(true);
+			this.loc = location;
+			gotoLoc();
+
+			// After we get a single good location fix, stop updating.
+			// I'm still not sure if this is really the desired behavior.
+			pauseLocationUpdates();
 		}
-		this.loc = location;
-		gotoLoc();
 	}
 
 	@Override
