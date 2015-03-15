@@ -199,6 +199,7 @@ public class ShareLocationActivity extends Activity implements LocationListener 
 			this.loc = location;
 			gotoLoc();
 
+			this.map.getOverlays().clear();
 			this.map.getOverlays().add(new Marker(this, new GeoPoint(this.loc)));
 		}
 	}
