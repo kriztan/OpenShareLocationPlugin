@@ -39,7 +39,7 @@ public class ShareLocationActivity extends Activity implements LocationListener 
 
 		// Get map view and configure it.
 		final MapView map = (MapView) findViewById(R.id.map);
-		map.setTileSource(TileSourceFactory.MAPNIK);
+		map.setTileSource(Config.TILE_SOURCE_PROVIDER);
 		map.setBuiltInZoomControls(false);
 		map.setMultiTouchControls(true);
 

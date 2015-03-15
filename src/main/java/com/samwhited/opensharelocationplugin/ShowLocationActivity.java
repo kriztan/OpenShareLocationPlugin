@@ -34,8 +34,8 @@ public class ShowLocationActivity extends Activity {
 
 		// Get map view and configure it.
 		final MapView map = (MapView) findViewById(R.id.map);
-		map.setTileSource(TileSourceFactory.MAPNIK);
-		map.setBuiltInZoomControls(true);
+		map.setTileSource(Config.TILE_SOURCE_PROVIDER);
+		map.setBuiltInZoomControls(false);
 		map.setMultiTouchControls(true);
 
 		this.mapController = map.getController();
