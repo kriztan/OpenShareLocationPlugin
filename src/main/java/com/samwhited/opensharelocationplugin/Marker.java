@@ -31,7 +31,7 @@ public class Marker extends SimpleLocationOverlay {
 
 		view.getProjection().toPixels(position, mapCenterPoint);
 
-		final Bitmap icon = BitmapFactory.decodeResource(view.getResources(), R.drawable.ic_location_on_grey600_48dp);
+		final Bitmap icon = BitmapFactory.decodeResource(view.getResources(), R.drawable.ic_place_grey600_48dp);
 
 		c.drawBitmap(icon,
 				mapCenterPoint.x - icon.getWidth() / 2,
