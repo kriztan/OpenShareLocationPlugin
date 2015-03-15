@@ -2,9 +2,6 @@ package com.samwhited.opensharelocationplugin.activities;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
