@@ -21,10 +21,8 @@ import org.osmdroid.views.MapView;
 
 public class ShowLocationActivity extends Activity {
 
-	protected String locName;
-	protected GeoPoint loc = Config.INITIAL_POS;
-	protected MapView map;
-	protected IMapController mapController;
+	private GeoPoint loc = Config.INITIAL_POS;
+	private IMapController mapController;
 
 	private Uri createGeoUri() {
 		return Uri.parse("geo:" + loc.getLatitude() + "," + loc.getLongitude());
@@ -42,7 +40,7 @@ public class ShowLocationActivity extends Activity {
 		setContentView(R.layout.activity_show_location);
 
 		// Get map view and configure it.
-		this.map = (MapView) findViewById(R.id.map);
+		final MapView map = (MapView) findViewById(R.id.map);
 		map.setTileSource(TileSourceFactory.MAPNIK);
 		map.setBuiltInZoomControls(true);
 		map.setMultiTouchControls(true);
@@ -79,8 +77,9 @@ public class ShowLocationActivity extends Activity {
 		super.onResume();
 		final Intent intent = getIntent();
 
+		final String locName;
 		if (intent != null) {
-			this.locName = intent.getStringExtra("name");
+			locName = intent.getStringExtra("name");
 
 			if (intent.hasExtra("longitude") && intent.hasExtra("latitude")) {
 				final double longitude = intent.getDoubleExtra("longitude", 0);
@@ -92,7 +91,7 @@ public class ShowLocationActivity extends Activity {
 				}
 			}
 		} else {
-			this.locName = null;
+			locName = null;
 		}
 	}
 

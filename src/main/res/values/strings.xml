@@ -8,6 +8,13 @@
     <string name="action_share_location">Share Location</string>
     <string name="title_activity_about">About</string>
 
+    <string name="location_disabled">Location sharing is disabled</string>
+    <string name="enable">Enable</string>
+    <string name="cancel">Cancel</string>
+    <string name="share">Share</string>
+    <string name="locating">Locating…</string>
+
+
     <string name="about_text" translatable="false">
         <b>Open Show Location Plugin</b> for Conversations
         \nCopyright © 2015, Sam Whited\n
