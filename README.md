@@ -1,5 +1,7 @@
 # Open Share Location Plugin for Conversations
 
+[![Google Play](http://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=com.samwhited.opensharelocationplugin)
+
 This is a location sharing plugin for the XMPP client
 [Conversations][conversations]. Unlike the
 [official plugin][conversations-loc], this one uses data from Open Street Maps
