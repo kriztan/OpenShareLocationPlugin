@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">OpenShareLocationPlugin</string>
-    <string name="title_activity_share_location">Open Share Location</string>
-    <string name="title_activity_show_location">Open Show Location</string>
+    <string name="title_activity_share_location">Share Location</string>
+    <string name="title_activity_show_location">Show Location</string>
 
     <string name="action_about">About</string>
     <string name="action_copy_location">Copy Location</string>

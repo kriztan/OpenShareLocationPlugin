@@ -11,6 +11,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -27,7 +29,6 @@ public class ShareLocationActivity extends Activity implements LocationListener 
 	private IMapController mapController;
 	private Button shareButton;
 	private RelativeLayout snackBar;
-	private LocationManager locationManager;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -35,7 +36,7 @@ public class ShareLocationActivity extends Activity implements LocationListener 
 
 		setContentView(R.layout.activity_share_location);
 
-		this.locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+		final LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
 		// Get map view and configure it.
 		final MapView map = (MapView) findViewById(R.id.map);
@@ -161,5 +162,24 @@ public class ShareLocationActivity extends Activity implements LocationListener 
 		} else {
 			return isLocationEnabledLegacy();
 		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(final Menu menu) {
+		getMenuInflater().inflate(R.menu.menu_share_location, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(final MenuItem item) {
+		switch (item.getItemId()) {
+			case android.R.id.home:
+				finish();
+				return true;
+			case R.id.action_about:
+				startActivity(new Intent(this, AboutActivity.class));
+				return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 }

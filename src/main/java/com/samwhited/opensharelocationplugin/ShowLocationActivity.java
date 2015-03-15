@@ -5,8 +5,6 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
-import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,7 +13,6 @@ import android.widget.ShareActionProvider;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 
 
@@ -23,10 +20,6 @@ public class ShowLocationActivity extends Activity {
 
 	private GeoPoint loc = Config.INITIAL_POS;
 	private IMapController mapController;
-
-	private Uri createGeoUri() {
-		return Uri.parse("geo:" + loc.getLatitude() + "," + loc.getLongitude());
-	}
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -53,14 +46,14 @@ public class ShowLocationActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.menu_share_location, menu);
+		getMenuInflater().inflate(R.menu.menu_show_location, menu);
 
 		final MenuItem item = menu.findItem(R.id.action_share_location);
 		if (item.getActionProvider() != null && loc != null) {
 			final ShareActionProvider mShareActionProvider = (ShareActionProvider) item.getActionProvider();
 			final Intent shareIntent = new Intent();
 			shareIntent.setAction(Intent.ACTION_SEND);
-			shareIntent.putExtra(Intent.EXTRA_TEXT, createGeoUri().toString());
+			shareIntent.putExtra(Intent.EXTRA_TEXT, Config.createGeoUri(loc).toString());
 			shareIntent.setType("text/plain");
 			mShareActionProvider.setShareIntent(shareIntent);
 		} else {
@@ -106,7 +99,7 @@ public class ShowLocationActivity extends Activity {
 				return true;
 			case R.id.action_copy_location:
 				final ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-				final ClipData clip = ClipData.newPlainText("location", this.createGeoUri().toString());
+				final ClipData clip = ClipData.newPlainText("location", Config.createGeoUri(loc).toString());
 				clipboard.setPrimaryClip(clip);
 				return true;
 		}
