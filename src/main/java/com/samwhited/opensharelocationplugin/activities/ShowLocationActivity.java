@@ -1,4 +1,4 @@
-package com.samwhited.opensharelocationplugin;
+package com.samwhited.opensharelocationplugin.activities;
 
 import android.app.ActionBar;
 import android.content.ClipData;
@@ -12,8 +12,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ShareActionProvider;
 
+import com.samwhited.opensharelocationplugin.R;
 import com.samwhited.opensharelocationplugin.overlays.Marker;
 import com.samwhited.opensharelocationplugin.overlays.MyLocation;
+import com.samwhited.opensharelocationplugin.util.Config;
+import com.samwhited.opensharelocationplugin.util.LocationHelper;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.util.GeoPoint;
@@ -51,6 +54,8 @@ public class ShowLocationActivity extends LocationActivity implements LocationLi
 		this.mapController = map.getController();
 		mapController.setZoom(Config.INITIAL_ZOOM_LEVEL);
 		mapController.setCenter(this.loc);
+
+		requestLocationUpdates();
 	}
 
 	@Override

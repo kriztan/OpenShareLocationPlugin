@@ -1,4 +1,4 @@
-package com.samwhited.opensharelocationplugin;
+package com.samwhited.opensharelocationplugin.activities;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -7,6 +7,8 @@ import android.content.ClipboardManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+
+import com.samwhited.opensharelocationplugin.R;
 
 
 public class AboutActivity extends Activity {

@@ -1,4 +1,4 @@
-package com.samwhited.opensharelocationplugin;
+package com.samwhited.opensharelocationplugin.activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,6 +7,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import com.samwhited.opensharelocationplugin.util.Config;
+
 public abstract class LocationActivity extends Activity implements LocationListener {
 	private LocationManager locationManager;
 
@@ -14,8 +16,6 @@ public abstract class LocationActivity extends Activity implements LocationListe
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
-		requestLocationUpdates();
 	}
 
 	protected abstract void gotoLoc() throws UnsupportedOperationException;

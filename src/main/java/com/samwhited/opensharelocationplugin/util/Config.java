@@ -1,4 +1,4 @@
-package com.samwhited.opensharelocationplugin;
+package com.samwhited.opensharelocationplugin.util;
 
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;

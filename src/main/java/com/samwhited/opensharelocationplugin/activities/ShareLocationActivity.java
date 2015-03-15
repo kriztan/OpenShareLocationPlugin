@@ -1,4 +1,4 @@
-package com.samwhited.opensharelocationplugin;
+package com.samwhited.opensharelocationplugin.activities;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -15,7 +15,10 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.samwhited.opensharelocationplugin.overlays.Marker;
+import com.samwhited.opensharelocationplugin.R;
+import com.samwhited.opensharelocationplugin.overlays.MyLocation;
+import com.samwhited.opensharelocationplugin.util.Config;
+import com.samwhited.opensharelocationplugin.util.LocationHelper;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.util.GeoPoint;
@@ -81,13 +84,18 @@ public class ShareLocationActivity extends LocationActivity implements LocationL
 				startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 			}
 		});
+
+		requestLocationUpdates();
 	}
 
-
-
+	@Override
 	protected void gotoLoc() {
-		mapController.animateTo(new GeoPoint(this.loc));
-		mapController.setZoom(Config.FINAL_ZOOM_LEVEL);
+		if (this.loc != null && mapController != null) {
+			if (map.getZoomLevel() == Config.INITIAL_ZOOM_LEVEL) {
+				mapController.setZoom(Config.FINAL_ZOOM_LEVEL);
+			}
+			mapController.animateTo(new GeoPoint(this.loc));
+		}
 	}
 
 	@Override
@@ -131,7 +139,7 @@ public class ShareLocationActivity extends LocationActivity implements LocationL
 			gotoLoc();
 
 			this.map.getOverlays().clear();
-			this.map.getOverlays().add(new Marker(this, new GeoPoint(this.loc)));
+			this.map.getOverlays().add(new MyLocation(this, this.loc));
 		}
 	}
 

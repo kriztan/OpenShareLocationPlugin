@@ -1,6 +1,8 @@
-package com.samwhited.opensharelocationplugin;
+package com.samwhited.opensharelocationplugin.util;
 
 import android.location.Location;
+
+import com.samwhited.opensharelocationplugin.util.Config;
 
 public final class LocationHelper {
 	private static boolean isSameProvider(final String provider1, final String provider2) {
