@@ -5,6 +5,9 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,12 +17,16 @@ import org.osmdroid.api.IMapController;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.OverlayItem;
+import org.osmdroid.views.overlay.SimpleLocationOverlay;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 
 public class ShowLocationActivity extends Activity {
 
 	private GeoPoint loc = Config.INITIAL_POS;
 	private IMapController mapController;
+	private MapView map;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -33,7 +40,7 @@ public class ShowLocationActivity extends Activity {
 		setContentView(R.layout.activity_show_location);
 
 		// Get map view and configure it.
-		final MapView map = (MapView) findViewById(R.id.map);
+		map = (MapView) findViewById(R.id.map);
 		map.setTileSource(Config.TILE_SOURCE_PROVIDER);
 		map.setBuiltInZoomControls(false);
 		map.setMultiTouchControls(true);
@@ -80,6 +87,8 @@ public class ShowLocationActivity extends Activity {
 				if (this.mapController != null) {
 					mapController.animateTo(this.loc);
 					mapController.setZoom(Config.FINAL_ZOOM_LEVEL);
+
+					this.map.getOverlays().add(new Marker(this, this.loc));
 				}
 			}
 		} else {

@@ -19,7 +19,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.osmdroid.api.IMapController;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
@@ -30,6 +29,7 @@ public class ShareLocationActivity extends Activity implements LocationListener 
 	private Button shareButton;
 	private RelativeLayout snackBar;
 	private LocationManager locationManager;
+	private MapView map;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -38,7 +38,7 @@ public class ShareLocationActivity extends Activity implements LocationListener 
 		setContentView(R.layout.activity_share_location);
 
 		// Get map view and configure it.
-		final MapView map = (MapView) findViewById(R.id.map);
+		map = (MapView) findViewById(R.id.map);
 		map.setTileSource(Config.TILE_SOURCE_PROVIDER);
 		map.setBuiltInZoomControls(false);
 		map.setMultiTouchControls(true);
@@ -194,6 +194,8 @@ public class ShareLocationActivity extends Activity implements LocationListener 
 			setShareButtonEnabled(true);
 			this.loc = location;
 			gotoLoc();
+
+			this.map.getOverlays().add(new Marker(this, new GeoPoint(this.loc)));
 
 			// After we get a single good location fix, stop updating.
 			// I'm still not sure if this is really the desired behavior.
