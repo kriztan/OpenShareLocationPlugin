@@ -14,7 +14,10 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="ic_navigation_48px.svg">
+   sodipodi:docname="launcher.svg"
+   inkscape:export-filename="/home/sam/Projects/OpenShareLocationPlugin/art/launcher.png"
+   inkscape:export-xdpi="960"
+   inkscape:export-ydpi="960">
   <metadata
      id="metadata12">
     <rdf:RDF>
@@ -23,7 +26,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -52,6 +55,24 @@
          offset="1"
          id="stop3917" />
     </linearGradient>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath4277">
+      <path
+         inkscape:connector-curvature="0"
+         d="M 23.999717,3.9995324 8.999718,40.589532 l 1.41,1.41 13.589999,-6 13.59,6 1.41,-1.41 z"
+         id="path4279"
+         style="fill:#00a000;fill-opacity:1;stroke:#ffffff;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:8, 8;stroke-dashoffset:1.19999993;stroke-opacity:0.50196078" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath4323">
+      <path
+         style="fill:#00a000;fill-opacity:1;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:8, 8;stroke-dashoffset:1.19999993;stroke-opacity:0.50196078"
+         id="path4325"
+         d="M 24.008442,4.0723566 9.0084404,40.662356 l 1.4100006,1.41 13.590001,-6 13.589999,6 1.41,-1.41 z"
+         inkscape:connector-curvature="0" />
+    </clipPath>
   </defs>
   <sodipodi:namedview
      pagecolor="#ffffff"
@@ -66,9 +87,9 @@
      inkscape:window-height="1017"
      id="namedview8"
      showgrid="false"
-     inkscape:zoom="13.906433"
-     inkscape:cx="12.772977"
-     inkscape:cy="26.436745"
+     inkscape:zoom="9.8333331"
+     inkscape:cx="6.8049159"
+     inkscape:cy="29.859938"
      inkscape:window-x="0"
      inkscape:window-y="41"
      inkscape:window-maximized="1"
@@ -80,12 +101,14 @@
   <path
      d="M24 4l-15 36.59 1.41 1.41 13.59-6 13.59 6 1.41-1.41z"
      id="path6"
-     style="fill:#00a000;fill-opacity:1;stroke:#ffffff;stroke-opacity:0.50196081;stroke-linejoin:miter;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:8,8;stroke-dashoffset:1.19999993;stroke-linecap:butt" />
+     style="fill:#00a000;fill-opacity:1;stroke:#ffffff;stroke-opacity:0.50196081;stroke-linejoin:miter;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:8,8;stroke-dashoffset:1.19999993;stroke-linecap:butt"
+     clip-path="url(#clipPath4323)" />
   <path
      style="display:inline;opacity:0.19211821;fill:url(#radialGradient3883);fill-opacity:1;stroke:none"
      d="m 28.626356,3.8952079 c 15.401473,0 27.884553,17.8972881 27.884553,39.9722741 0,4.65651 -0.556376,9.127114 -1.578045,13.281436 -1.2654,0.257161 -2.559146,0.38954 -3.872974,0.38954 -4.694236,0 -8.31351,-1.408787 -12.445106,-3.601284 L 25.492126,61.663362 A 1.7289102,2.5254915 0 0 1 23.166595,58.713375 L 26.720461,37.731163 C 24.436178,31.874412 23.65618,25.205285 23.65618,18.326089 c 0,-5.002707 0.656939,-9.7835192 1.853432,-14.1818573 1.023289,-0.1630945 2.063377,-0.2490238 3.116744,-0.2490238 z"
      id="path3878"
-     inkscape:connector-curvature="0" />
+     inkscape:connector-curvature="0"
+     clip-path="url(#clipPath4277)" />
   <g
      id="g5083"
      transform="translate(0.35954582,1.2224558)">
