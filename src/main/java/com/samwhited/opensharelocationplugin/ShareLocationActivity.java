@@ -101,6 +101,10 @@ public class ShareLocationActivity extends Activity implements LocationListener 
 				Config.LOCATION_FIX_SPACE_DELTA, this);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Config.LOCATION_FIX_TIME_DELTA,
 				Config.LOCATION_FIX_SPACE_DELTA, this);
+
+		// If something else is also querying for location more frequently than we are, the battery is already being
+		// drained. Go ahead and use the existing locations as often as we can get them.
+		locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, this);
 	}
 
 	private void pauseLocationUpdates() {
@@ -196,10 +200,6 @@ public class ShareLocationActivity extends Activity implements LocationListener 
 			gotoLoc();
 
 			this.map.getOverlays().add(new Marker(this, new GeoPoint(this.loc)));
-
-			// After we get a single good location fix, stop updating.
-			// I'm still not sure if this is really the desired behavior.
-			pauseLocationUpdates();
 		}
 	}
 
