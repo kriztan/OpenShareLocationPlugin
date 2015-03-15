@@ -5,21 +5,15 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ShareActionProvider;
 
 import org.osmdroid.api.IMapController;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.OverlayItem;
-import org.osmdroid.views.overlay.SimpleLocationOverlay;
-import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 
 public class ShowLocationActivity extends Activity {
@@ -27,6 +21,10 @@ public class ShowLocationActivity extends Activity {
 	private GeoPoint loc = Config.INITIAL_POS;
 	private IMapController mapController;
 	private MapView map;
+
+	private Uri createGeoUri() {
+		return Uri.parse("geo:" + this.loc.getLatitude() + "," + this.loc.getLongitude());
+	}
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -60,7 +58,7 @@ public class ShowLocationActivity extends Activity {
 			final ShareActionProvider mShareActionProvider = (ShareActionProvider) item.getActionProvider();
 			final Intent shareIntent = new Intent();
 			shareIntent.setAction(Intent.ACTION_SEND);
-			shareIntent.putExtra(Intent.EXTRA_TEXT, Config.createGeoUri(loc).toString());
+			shareIntent.putExtra(Intent.EXTRA_TEXT, createGeoUri().toString());
 			shareIntent.setType("text/plain");
 			mShareActionProvider.setShareIntent(shareIntent);
 		} else {
@@ -76,10 +74,7 @@ public class ShowLocationActivity extends Activity {
 		super.onResume();
 		final Intent intent = getIntent();
 
-		final String locName;
 		if (intent != null) {
-			locName = intent.getStringExtra("name");
-
 			if (intent.hasExtra("longitude") && intent.hasExtra("latitude")) {
 				final double longitude = intent.getDoubleExtra("longitude", 0);
 				final double latitude = intent.getDoubleExtra("latitude", 0);
@@ -91,8 +86,6 @@ public class ShowLocationActivity extends Activity {
 					this.map.getOverlays().add(new Marker(this, this.loc));
 				}
 			}
-		} else {
-			locName = null;
 		}
 	}
 
@@ -107,7 +100,7 @@ public class ShowLocationActivity extends Activity {
 				return true;
 			case R.id.action_copy_location:
 				final ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-				final ClipData clip = ClipData.newPlainText("location", Config.createGeoUri(loc).toString());
+				final ClipData clip = ClipData.newPlainText("location", createGeoUri().toString());
 				clipboard.setPrimaryClip(clip);
 				return true;
 		}

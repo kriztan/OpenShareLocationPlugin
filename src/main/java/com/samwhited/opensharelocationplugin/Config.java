@@ -1,8 +1,5 @@
 package com.samwhited.opensharelocationplugin;
 
-import android.location.Location;
-import android.net.Uri;
-
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
@@ -15,13 +12,4 @@ public final class Config {
 	public final static int LOCATION_FIX_SPACE_DELTA = 0;
 	public final static int LOCATION_FIX_SIGNIFICANT_TIME_DELTA = 1000 * 60 * 2; // Two minutes
 	public final static ITileSource TILE_SOURCE_PROVIDER = TileSourceFactory.MAPNIK;
-
-	public static Uri createGeoUri(final Location location) {
-		return createGeoUri(new GeoPoint(location));
-	}
-
-	public static Uri createGeoUri(final GeoPoint location) {
-		return Uri.parse("geo:" + location.getLatitude() + "," + location.getLongitude());
-	}
-
 }
