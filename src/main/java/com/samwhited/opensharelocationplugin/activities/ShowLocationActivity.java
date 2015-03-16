@@ -22,6 +22,9 @@ import org.osmdroid.api.IMapController;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class ShowLocationActivity extends LocationActivity implements LocationListener {
 
@@ -109,17 +112,77 @@ public class ShowLocationActivity extends LocationActivity implements LocationLi
 		super.onResume();
 		final Intent intent = getIntent();
 
-		if (intent != null) {
-			if (intent.hasExtra("longitude") && intent.hasExtra("latitude")) {
-				final double longitude = intent.getDoubleExtra("longitude", 0);
-				final double latitude = intent.getDoubleExtra("latitude", 0);
-				this.loc = new GeoPoint(latitude, longitude);
-				if (this.mapController != null) {
-					mapController.animateTo(this.loc);
-					mapController.setZoom(Config.FINAL_ZOOM_LEVEL);
+		boolean zoom = true;
 
-					addOverlays();
+		if (intent != null) {
+			switch (intent.getAction()) {
+				case "eu.siacs.conversations.location.request":
+					if (intent.hasExtra("longitude") && intent.hasExtra("latitude")) {
+						final double longitude = intent.getDoubleExtra("longitude", 0);
+						final double latitude = intent.getDoubleExtra("latitude", 0);
+						this.loc = new GeoPoint(latitude, longitude);
+					}
+					break;
+				case Intent.ACTION_VIEW:
+					// TODO: This is some serious spaghetti code. Write a proper geo URI parser.
+					final Uri geoUri = intent.getData();
+					// Seriously terrible control flow here.
+					boolean posInQuery = false;
+
+					// Attempt to set zoom level if the geo URI specifies it
+					if (geoUri != null && geoUri.getQuery() != null && !geoUri.getQuery().isEmpty()) {
+						final String[] query = geoUri.getQuery().split("&");
+						for (final String param : query) {
+							final String[] keyval = param.split("=");
+							switch (keyval[0]) {
+								case "z":
+									if (keyval.length == 2 && keyval[1] != null && !keyval[1].isEmpty()) {
+										try {
+											mapController.setZoom(Integer.valueOf(keyval[1]));
+											zoom = false;
+										} catch (final Exception ignored) {
+										}
+									}
+									break;
+								case "q":
+									final Pattern latlng = Pattern.compile("/^([-+]?[0-9]+(\\.[0-9]+)?),([-+]?[0-9]+(\\.[0-9]+)?)(\\(.*\\))?/");
+
+									if (keyval.length == 2 && keyval[1] != null && !keyval[1].isEmpty()) {
+										final Matcher m = latlng.matcher(keyval[1]);
+										if (m.matches()) {
+											try {
+												this.loc = new GeoPoint(Double.valueOf(m.group(1)), Double.valueOf(m.group(3)));
+											} catch (final Exception ignored) {
+											}
+											posInQuery = true;
+										}
+									}
+									break;
+							}
+						}
+					}
+
+					if (geoUri != null && geoUri.getSchemeSpecificPart() != null && !geoUri.getSchemeSpecificPart().isEmpty()) {
+						final String[] parts = geoUri.getSchemeSpecificPart().split(",");
+						if (parts[1].contains("?")) {
+							parts[1] = parts[1].substring(0, parts[1].indexOf("?"));
+						}
+						if (parts.length == 2 && !posInQuery) {
+							try {
+								this.loc = new GeoPoint(Double.valueOf(parts[0]), Double.valueOf(parts[1]));
+							} catch (final Exception ignored) {
+							}
+						}
+					}
+					break;
+			}
+			if (this.mapController != null && this.loc != null) {
+				if (zoom) {
+					mapController.setZoom(Config.FINAL_ZOOM_LEVEL);
 				}
+				mapController.animateTo(this.loc);
+
+				addOverlays();
 			}
 		}
 	}
